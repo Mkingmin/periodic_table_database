@@ -5,13 +5,17 @@ then
 echo -e "\nPlease provide an element as an argument.\n"
 else
 # check if argument belongs to existing atomic
-CHECK=$($PSQL "SELECT atomic_number, symbol, name FROM elements WHERE $1=atomic_number OR '$1'=symbol OR '$1'=name")
+if [[ $1 =~ ^[0-9]+$ ]]
+then
+  ATOMIC_INFO=$($PSQL "SELECT * FROM elements INNER JOIN properties USING(atomic_number) INNER JOIN types USING(type_id) WHERE atomic_number=$1")
+else
+  ATOMIC_INFO=$($PSQL "SELECT * FROM elements INNER JOIN properties USING(atomic_number) INNER JOIN types USING(type_id) WHERE symbol='$1' OR name='$1'")
+fi
 # if it doesn't not belong to databse
-if [[ -z $CHECK ]]
+if [[ -z $ATOMIC_INFO ]]
 then
 echo -e "\nI could not find that element in the database.\n"
 else
-ATOMIC_INFO=$($PSQL "SELECT * FROM elements INNER JOIN properties USING(atomic_number) INNER JOIN types USING(type_id) WHERE $1=atomic_number OR '$1'=symbol OR '$1'=name")
   # Parse the result
   echo "$ATOMIC_INFO" | while IFS="|" read TYPE_ID ATOMIC_NUMBER SYMBOL NAME ATOMIC_MASS MELTING_POINT BOILING_POINT TYPE
   do
