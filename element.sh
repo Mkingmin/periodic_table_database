@@ -2,7 +2,7 @@
 PSQL="psql -X --username=freecodecamp --dbname=periodic_table --no-align --tuples-only -c"
 if [[ -z $1 ]]
 then
-echo -e "\nPlease provide an element as an argument."
+echo -e "\nPlease provide an element as an argument.\n"
 else
 # check if argument belongs to existing atomic
 if [[ $1 =~ ^[0-9]+$ ]]
