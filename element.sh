@@ -23,4 +23,3 @@ else
   done
 fi
 fi
-check
